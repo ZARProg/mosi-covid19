@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Efektivitas Vaksinasi COVID-19</title>
+    <title>Dasbor Interaktif: Simulasi Efektivitas Vaksinasi COVID-19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Analytics (Off-white background, muted blue for vaccination scenario, neutral gray for baseline, dark text) -->
-    <!-- Application Structure Plan: A multi-section SPA with a top navigation bar. Sections include a dynamic 'Dasbor Simulasi' (the original interactive dashboard), 'Informasi Anggota' (team details), and 'Unggah Dataset' (a placeholder for future data input). This structure was chosen to provide clear thematic separation and intuitive navigation, allowing users to explore different aspects of the project beyond just the simulation results, enhancing overall user understanding and engagement. -->
-    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method - Confirming NO SVG/Mermaid, supporting the DESIGNED structure.
+    <!-- Chosen Palette: Calm Analytics (Background: #f8f7f4, Primary Text: #333333, Secondary Text: #6b7280, Accent Blue: #3b82f6, Baseline Gray: #6b7280, Card Background: white) -->
+    <!-- Application Structure Plan: A multi-section SPA with a top navigation bar. Sections include a dynamic 'Dasbor Simulasi' (the original interactive dashboard), 'Informasi Anggota' (team details with specific roles), and 'Kustomisasi Data & Simulasi' (a placeholder for future data input/filtering). 'Asumsi & Metodologi' and 'Kesimpulan' are separate navigable sections. This structure was chosen to provide clear thematic separation and intuitive navigation, allowing users to explore different aspects of the project beyond just the simulation results, enhancing overall user understanding and engagement. -->
+    <!-- Visualization & Content Choices:
     - Dasbor Simulasi: Report Info: 30-day simulation data comparing two scenarios. Goal: Compare trends & daily stats. Viz/Presentation: KPI Cards (HTML/Tailwind) for daily stats, Line Chart (Chart.js/Canvas) for trends over time. Interaction: Day slider updates all visuals. Buttons switch the chart metric (Active Cases vs. Fatality Rate). Justification: Provides both snapshot and trend views, encouraging exploration. Library/Method: Chart.js.
-    - Informasi Anggota: Report Info: Team member names and NIMs. Goal: Present team credits clearly. Viz/Presentation: Member cards (HTML/Tailwind grid) with names and roles. Interaction: Static display. Justification: Clear, organized presentation of team members. Library/Method: HTML/Tailwind.
-    - Unggah Dataset: Report Info: Concept of external data input. Goal: Illustrate potential for custom data. Viz/Presentation: Form elements (HTML/Tailwind) with descriptive text. Interaction: Button click (placeholder). Justification: Shows extensibility and potential for user-driven analysis. Library/Method: HTML/Tailwind/Vanilla JS.
+    - Informasi Anggota: Report Info: Team member names and NIMs. Goal: Present team credits clearly. Viz/Presentation: Member cards (HTML/Tailwind grid) with names and specific roles. Interaction: Static display. Justification: Clear, organized presentation of team members with enhanced detail. Library/Method: HTML/Tailwind.
+    - Kustomisasi Data & Simulasi: Report Info: Concept of external data input/filtering historical data. Goal: Illustrate potential for custom data analysis. Viz/Presentation: Form elements (HTML/Tailwind) with descriptive text. Interaction: Button click (placeholder). Justification: Shows extensibility and potential for user-driven analysis, directly addressing 'Unggah Dataset' and 'Filter Data Historis' concepts. Library/Method: HTML/Tailwind/Vanilla JS.
+    - Asumsi & Metodologi: Report Info: Simulation assumptions, distributions, RNG. Goal: Explain underlying model. Viz/Presentation: Expandable text section (details tag) with clear paragraphs. Interaction: Toggle expand/collapse. Justification: Provides detailed context without cluttering the main view, including 'Info RNG & Distribusi'. Library/Method: HTML/Tailwind.
+    - Kesimpulan: Report Info: Main findings. Goal: Summarize key takeaways. Viz/Presentation: Text block. Interaction: Static display. Justification: Clear summary of the simulation's implications. Library/Method: HTML/Tailwind.
     CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f7f4;
-            color: #333;
+            color: #333333; /* Darker text for better contrast */
         }
         .container {
             max-width: 1200px;
@@ -41,90 +43,119 @@
         }
         .kpi-card {
             background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            border-radius: 1rem; /* More rounded */
+            padding: 2rem; /* More padding */
+            box-shadow: 0 6px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.08); /* Stronger shadow */
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .kpi-card:hover {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-7px) scale(1.01); /* More pronounced hover */
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.2), 0 6px 10px -6px rgba(0, 0, 0, 0.15);
         }
         .slider-thumb::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 26px; /* Larger thumb */
+            height: 26px; /* Larger thumb */
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
-            border: 3px solid #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 4px solid #ffffff; /* Thicker white border */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* Stronger thumb shadow */
         }
         .slider-thumb::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
-            border: 3px solid #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 4px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
         .slider-thumb::-webkit-slider-runnable-track {
             background: #cbd5e1;
             border-radius: 0.5rem;
-            height: 8px;
+            height: 10px; /* Thicker track */
         }
         .slider-thumb::-moz-range-track {
             background: #cbd5e1;
             border-radius: 0.5rem;
-            height: 8px;
+            height: 10px;
         }
         .nav-link {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-            font-weight: 600;
+            padding: 0.85rem 1.75rem; /* More padding */
+            border-radius: 0.75rem; /* More rounded */
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            font-weight: 700; /* Bolder text */
+            color: #6b7280; /* Default text color for nav links */
         }
         .nav-link.active {
             background-color: #3b82f6;
             color: white;
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4); /* Stronger shadow for active */
         }
         .nav-link:not(.active):hover {
-            background-color: #e0e7ff;
+            background-color: #e0e7ff; /* Lighter hover background */
             color: #3b82f6;
+            transform: translateY(-2px); /* Slight lift on hover */
         }
         .section-content {
             display: none;
+            animation: fadeIn 0.5s ease-out; /* Fade in animation */
         }
         .section-content.active {
             display: block;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .member-card {
             background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             text-align: center;
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .member-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .member-card h3 {
+            color: #333333; /* Darker heading */
+            font-size: 1.5rem; /* Larger heading */
+        }
+        .member-card p {
+            color: #6b7280; /* Consistent text color */
         }
         .input-field {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
+            padding: 0.85rem; /* More padding */
+            border-radius: 0.75rem; /* More rounded */
+            border: 1px solid #c0c0c0; /* Slightly darker border */
             width: 100%;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); /* Deeper inset shadow */
             transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .input-field:focus {
             outline: none;
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.35); /* Stronger focus ring */
+        }
+        .upload-button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+        .upload-button:hover {
+            background-color: #2563eb; /* Darker blue on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
         }
     </style>
 </head>
@@ -132,15 +163,15 @@
 
     <div class="container mx-auto p-4 md:p-8">
 
-        <header class="text-center mb-10 py-4">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
-            <p class="text-lg text-gray-600 mt-3">Dashboard Responsive - Kelompok 12 IF3 UNIKOM</p>
+        <header class="text-center mb-10 py-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-2xl shadow-xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
+            <p class="text-lg md:text-xl font-medium mt-3 opacity-90">Dasbor Interaktif & Analisis Data Pandemi</p>
         </header>
 
-        <nav class="mb-12 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap justify-center gap-4">
+        <nav class="mb-12 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap justify-center gap-4 sticky top-0 z-10">
             <button id="nav-dashboard" class="nav-link active">Dasbor Simulasi</button>
             <button id="nav-members" class="nav-link">Informasi Anggota</button>
-            <button id="nav-upload" class="nav-link">Unggah Dataset</button>
+            <button id="nav-upload" class="nav-link">Kustomisasi Data & Simulasi</button>
             <button id="nav-assumptions" class="nav-link">Asumsi & Metodologi</button>
             <button id="nav-conclusion" class="nav-link">Kesimpulan</button>
         </nav>
@@ -234,28 +265,28 @@
                         <div class="member-card">
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Dionisius Deni Mardiansyah</h3>
                             <p class="text-gray-600">NIM: 10123089</p>
-                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel(Dataset)</p>
+                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
                         </div>
                         <div class="member-card">
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Muhammad Hafiz Hafiyyan</h3>
                             <p class="text-gray-600">NIM: 10123096</p>
-                            <p class="text-gray-500 text-sm mt-1">Membuat Program Dengan Menggunakan Bahasa Python</p>
+                            <p class="text-gray-500 text-sm mt-1">Membuat Program dengan Bahasa Python</p>
                         </div>
                         <div class="member-card">
                             <h3 class="text-xl font-semibold text-gray-800 mb-2">Samuel Tigor H.S.</h3>
                             <p class="text-gray-600">NIM: 10123000</p>
-                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel(Dataset)</p>
+                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Unggah Dataset Section -->
+            <!-- Kustomisasi Data & Simulasi Section -->
             <section id="upload-section" class="section-content">
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
-                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Unggah Dataset Anda</h2>
+                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Kustomisasi Data & Simulasi</h2>
                     <p class="text-gray-700 leading-relaxed text-lg mb-8 text-center">
-                        Bagian ini dirancang untuk memungkinkan Anda mengunggah dataset historis COVID-19 Anda sendiri di masa mendatang. Fitur ini akan memungkinkan simulasi dijalankan dengan data kustom, memberikan fleksibilitas lebih dalam analisis.
+                        Bagian ini dirancang untuk memungkinkan Anda mengunggah dan menggunakan dataset historis COVID-19 Anda sendiri untuk menjalankan simulasi. Ini memberikan fleksibilitas untuk menganalisis skenario dengan data kustom, mirip dengan fungsi 'Filter Data Historis' yang disebutkan dalam laporan.
                     </p>
                     <div class="max-w-xl mx-auto p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-inner">
                         <div class="mb-5">
@@ -270,7 +301,7 @@
                             <label for="data-description" class="block text-gray-700 text-md font-medium mb-2">Deskripsi Data:</label>
                             <textarea id="data-description" rows="4" placeholder="Jelaskan isi dataset Anda (kolom, periode, dll.)" class="input-field resize-y"></textarea>
                         </div>
-                        <button id="upload-button" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Unggah dan Proses Data</button>
+                        <button id="upload-button" class="w-full upload-button">Unggah dan Proses Data</button>
                         <p id="upload-status" class="text-center text-sm mt-4 text-gray-600"></p>
                     </div>
                 </div>
@@ -290,7 +321,7 @@
                     <div class="mt-6 text-gray-700 leading-relaxed text-lg space-y-4">
                         <p><strong>Periode Simulasi:</strong> 30 hari.</p>
                         <p><strong>Populasi Total:</strong> 265.185.520 jiwa.</p>
-                        <p><strong>Distribusi Probabilitas:</strong> Variabel acak (kasus baru, kematian, sembuh) dimodelkan menggunakan **Distribusi Normal** sebagai aproksimasi dari Distribusi Poisson. Pendekatan ini memungkinkan simulasi untuk menangkap fluktuasi dan variabilitas alami dalam munculnya kasus baru dari hari ke hari, kematian, dan pemulihan.</p>
+                        <p><strong>Distribusi Probabilitas & RNG:</strong> Variabel acak (kasus baru, kematian, sembuh) dimodelkan menggunakan **Distribusi Normal** sebagai aproksimasi dari Distribusi Poisson. Pendekatan ini memungkinkan simulasi untuk menangkap fluktuasi dan variabilitas alami dalam munculnya kasus baru dari hari ke hari, kematian, dan pemulihan. Penggunaan *seed* acak memastikan hasil simulasi dapat direproduksi.</p>
                         <p><strong>Parameter Vaksinasi (Skenario Hipotetis):</strong></p>
                         <ul class="list-disc list-inside pl-6 space-y-2">
                             <li><strong>Mulai Vaksinasi:</strong> Hari ke-18 simulasi. Asumsi ini memungkinkan perbandingan dampak vaksinasi jika program sudah dapat dilaksanakan lebih awal.</li>
