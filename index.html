@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dasbor Interaktif: Simulasi Efektivitas Vaksinasi COVID-19</title>
+    <title>Simulasi Efektivitas Vaksinasi COVID-19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,10 +33,15 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            height: 300px;
+            height: 300px; /* Base height for mobile */
             max-height: 40vh;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 640px) { /* sm breakpoint */
+            .chart-container {
+                height: 350px;
+            }
+        }
+        @media (min-width: 768px) { /* md breakpoint */
             .chart-container {
                 height: 400px;
             }
@@ -44,9 +49,14 @@
         .kpi-card {
             background-color: white;
             border-radius: 1rem; /* More rounded */
-            padding: 2rem; /* More padding */
+            padding: 1.5rem; /* Adjusted padding for smaller screens */
             box-shadow: 0 6px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.08); /* Stronger shadow */
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .kpi-card {
+                padding: 2rem; /* More padding for larger screens */
+            }
         }
         .kpi-card:hover {
             transform: translateY(-7px) scale(1.01); /* More pronounced hover */
@@ -83,11 +93,20 @@
             height: 10px;
         }
         .nav-link {
-            padding: 0.85rem 1.75rem; /* More padding */
+            padding: 0.75rem 1.25rem; /* Adjusted padding for smaller screens */
             border-radius: 0.75rem; /* More rounded */
             transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
             font-weight: 700; /* Bolder text */
             color: #6b7280; /* Default text color for nav links */
+            flex-grow: 1; /* Allow links to grow */
+            text-align: center; /* Center text in links */
+            white-space: nowrap; /* Prevent text wrapping in nav links */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .nav-link {
+                padding: 0.85rem 1.75rem; /* More padding for larger screens */
+                flex-grow: 0; /* Reset flex-grow for larger screens */
+            }
         }
         .nav-link.active {
             background-color: #3b82f6;
@@ -164,83 +183,83 @@
     <div class="container mx-auto p-4 md:p-8">
 
         <header class="text-center mb-10 py-6 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-2xl shadow-xl">
-            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
-            <p class="text-lg md:text-xl font-medium mt-3 opacity-90">Dasbor Interaktif & Analisis Data Pandemi</p>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
+            <p class="text-md sm:text-lg md:text-xl font-medium mt-3 opacity-90">Dasbor Interaktif & Analisis Data Pandemi</p>
         </header>
 
-        <nav class="mb-12 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap justify-center gap-4 sticky top-0 z-10">
-            <button id="nav-dashboard" class="nav-link active">Dasbor Simulasi</button>
-            <button id="nav-members" class="nav-link">Informasi Anggota</button>
-            <button id="nav-upload" class="nav-link">Kustomisasi Data & Simulasi</button>
-            <button id="nav-assumptions" class="nav-link">Asumsi & Metodologi</button>
-            <button id="nav-conclusion" class="nav-link">Kesimpulan</button>
+        <nav class="mb-12 bg-white p-3 sm:p-4 rounded-2xl shadow-lg flex flex-wrap justify-center gap-2 sm:gap-4 sticky top-0 z-10">
+            <button id="nav-dashboard" class="nav-link active text-sm sm:text-base">Dasbor Simulasi</button>
+            <button id="nav-members" class="nav-link text-sm sm:text-base">Informasi Anggota</button>
+            <button id="nav-upload" class="nav-link text-sm sm:text-base">Kustomisasi Data & Simulasi</button>
+            <button id="nav-assumptions" class="nav-link text-sm sm:text-base">Asumsi & Metodologi</button>
+            <button id="nav-conclusion" class="nav-link text-sm sm:text-base">Kesimpulan</button>
         </nav>
 
         <main>
             <!-- Dasbor Simulasi Section -->
             <section id="dashboard-section" class="section-content active">
-                <div class="mb-12 bg-white p-8 rounded-2xl shadow-lg">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Ringkasan Proyek</h2>
-                    <p class="text-gray-700 leading-relaxed text-lg">
+                <div class="mb-12 bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 text-gray-900">Ringkasan Proyek</h2>
+                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
                         Aplikasi ini secara interaktif menyajikan hasil simulasi efektivitas vaksinasi COVID-19 di Indonesia selama periode 30 hari. Tujuan utamanya adalah untuk membandingkan dua skenario: **Skenario Dasar** (tanpa intervensi vaksinasi) dan **Skenario Vaksinasi** (dengan program vaksinasi hipotetis dimulai pada hari ke-18). Dengan menggunakan dasbor ini, Anda dapat menjelajahi data hari demi hari untuk melihat bagaimana vaksinasi secara potensial dapat mengurangi jumlah kasus aktif dan tingkat kematian, mengubah data statis menjadi sebuah cerita yang dinamis dan mudah dipahami.
                     </p>
                 </div>
 
                 <div class="bg-gray-50 p-6 md:p-10 rounded-2xl shadow-inner">
                     <div class="flex flex-col items-center mb-8">
-                        <label for="day-slider" class="text-xl font-semibold mb-3 text-gray-800">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold text-3xl">1</span></label>
+                        <label for="day-slider" class="text-lg sm:text-xl font-semibold mb-3 text-gray-800">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold text-2xl sm:text-3xl">1</span></label>
                         <input id="day-slider" type="range" min="1" max="30" value="1" class="w-full max-w-3xl h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-thumb">
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                        <div class="kpi-card border-l-8 border-gray-400">
-                            <h3 class="text-xl font-semibold text-gray-600 mb-3">Skenario Dasar (Tanpa Vaksin)</h3>
-                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-10">
+                        <div class="kpi-card border-l-4 sm:border-l-8 border-gray-400">
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-600 mb-3">Skenario Dasar (Tanpa Vaksin)</h3>
+                            <div class="grid grid-cols-2 gap-y-3 gap-x-2 text-center">
                                 <div>
-                                    <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                    <p id="baseline-active" class="text-3xl font-bold text-gray-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Total Kasus Aktif</p>
+                                    <p id="baseline-active" class="text-2xl sm:text-3xl font-bold text-gray-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                    <p id="baseline-fatality" class="text-3xl font-bold text-gray-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Tingkat Kematian</p>
+                                    <p id="baseline-fatality" class="text-2xl sm:text-3xl font-bold text-gray-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                    <p id="baseline-new-cases" class="text-2xl font-semibold text-gray-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Kasus Baru Harian</p>
+                                    <p id="baseline-new-cases" class="text-xl sm:text-2xl font-semibold text-gray-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                    <p id="baseline-new-deaths" class="text-2xl font-semibold text-gray-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Kematian Baru Harian</p>
+                                    <p id="baseline-new-deaths" class="text-xl sm:text-2xl font-semibold text-gray-700"></p>
                                 </div>
                             </div>
                         </div>
-                        <div class="kpi-card border-l-8 border-blue-500">
-                            <h3 class="text-xl font-semibold text-blue-600 mb-3">Skenario Vaksinasi</h3>
-                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
+                        <div class="kpi-card border-l-4 sm:border-l-8 border-blue-500">
+                            <h3 class="text-lg sm:text-xl font-semibold text-blue-600 mb-3">Skenario Vaksinasi</h3>
+                            <div class="grid grid-cols-2 gap-y-3 gap-x-2 text-center">
                                  <div>
-                                    <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                    <p id="vax-active" class="text-3xl font-bold text-blue-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Total Kasus Aktif</p>
+                                    <p id="vax-active" class="text-2xl sm:text-3xl font-bold text-blue-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                    <p id="vax-fatality" class="text-3xl font-bold text-blue-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Tingkat Kematian</p>
+                                    <p id="vax-fatality" class="text-2xl sm:text-3xl font-bold text-blue-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                    <p id="vax-new-cases" class="text-2xl font-semibold text-blue-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Kasus Baru Harian</p>
+                                    <p id="vax-new-cases" class="text-xl sm:text-2xl font-semibold text-blue-700"></p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                    <p id="vax-new-deaths" class="text-2xl font-semibold text-blue-700"></p>
+                                    <p class="text-xs sm:text-sm text-gray-500">Kematian Baru Harian</p>
+                                    <p id="vax-new-deaths" class="text-xl sm:text-2xl font-semibold text-blue-700"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-                        <div class="flex justify-center items-center gap-4 mb-6">
-                            <button id="btn-active-cases" class="px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Total Kasus Aktif</button>
-                            <button id="btn-fatality-rate" class="px-6 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">Tingkat Kematian Kasus</button>
+                        <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-4 mb-6">
+                            <button id="btn-active-cases" class="px-5 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Total Kasus Aktif</button>
+                            <button id="btn-fatality-rate" class="px-5 py-2 sm:px-6 sm:py-3 text-sm sm:text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">Tingkat Kematian Kasus</button>
                         </div>
                         <div class="chart-container">
                             <canvas id="comparison-chart"></canvas>
@@ -251,31 +270,31 @@
 
             <!-- Informasi Anggota Section -->
             <section id="members-section" class="section-content">
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
-                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Informasi Anggota Tim</h2>
-                    <p class="text-gray-700 leading-relaxed text-lg mb-8 text-center">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-900 text-center">Informasi Anggota Tim</h2>
+                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 text-center">
                         Proyek simulasi ini disusun oleh tim mahasiswa dari Jurusan Teknik Informatika, Universitas Komputer Indonesia, sebagai bagian dari perkuliahan Pemodelan dan Simulasi.
                     </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                         <div class="member-card">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Muhammad Daffa Afdilla</h3>
-                            <p class="text-gray-600">NIM: 10122189</p>
-                            <p class="text-gray-500 text-sm mt-1">Membuat Laporan & Membuat Website</p>
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Muhammad Daffa Afdilla</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">NIM: 10122189</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1">Membuat Laporan & Membuat Website</p>
                         </div>
                         <div class="member-card">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Dionisius Deni Mardiansyah</h3>
-                            <p class="text-gray-600">NIM: 10123089</p>
-                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Dionisius Deni Mardiansyah</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">NIM: 10123089</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
                         </div>
                         <div class="member-card">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Muhammad Hafiz Hafiyyan</h3>
-                            <p class="text-gray-600">NIM: 10123096</p>
-                            <p class="text-gray-500 text-sm mt-1">Membuat Program dengan Bahasa Python</p>
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Muhammad Hafiz Hafiyyan</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">NIM: 10123096</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1">Membuat Program dengan Bahasa Python</p>
                         </div>
                         <div class="member-card">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Samuel Tigor H.S.</h3>
-                            <p class="text-gray-600">NIM: 10123000</p>
-                            <p class="text-gray-500 text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Samuel Tigor H.S.</h3>
+                            <p class="text-gray-600 text-sm sm:text-base">NIM: 10123000</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1">Mengerjakan File Excel (Dataset)</p>
                         </div>
                     </div>
                 </div>
@@ -283,34 +302,34 @@
 
             <!-- Kustomisasi Data & Simulasi Section -->
             <section id="upload-section" class="section-content">
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
-                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Kustomisasi Data & Simulasi</h2>
-                    <p class="text-gray-700 leading-relaxed text-lg mb-8 text-center">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-900 text-center">Kustomisasi Data & Simulasi</h2>
+                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed mb-8 text-center">
                         Bagian ini dirancang untuk memungkinkan Anda mengunggah dan menggunakan dataset historis COVID-19 Anda sendiri untuk menjalankan simulasi. Ini memberikan fleksibilitas untuk menganalisis skenario dengan data kustom, mirip dengan fungsi 'Filter Data Historis' yang disebutkan dalam laporan.
                     </p>
                     <div class="max-w-xl mx-auto p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-inner">
                         <div class="mb-5">
-                            <label for="dataset-file" class="block text-gray-700 text-md font-medium mb-2">Pilih File Dataset (CSV/JSON):</label>
+                            <label for="dataset-file" class="block text-gray-700 text-sm sm:text-md font-medium mb-2">Pilih File Dataset (CSV/JSON):</label>
                             <input type="file" id="dataset-file" accept=".csv,.json" class="input-field block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
                         </div>
                         <div class="mb-5">
-                            <label for="dataset-name" class="block text-gray-700 text-md font-medium mb-2">Nama Dataset (Opsional):</label>
-                            <input type="text" id="dataset-name" placeholder="Misalnya: Data COVID-19 Jakarta" class="input-field">
+                            <label for="dataset-name" class="block text-gray-700 text-sm sm:text-md font-medium mb-2">Nama Dataset (Opsional):</label>
+                            <input type="text" id="dataset-name" placeholder="Misalnya: Data COVID-19 Jakarta" class="input-field text-sm sm:text-base">
                         </div>
                         <div class="mb-6">
-                            <label for="data-description" class="block text-gray-700 text-md font-medium mb-2">Deskripsi Data:</label>
-                            <textarea id="data-description" rows="4" placeholder="Jelaskan isi dataset Anda (kolom, periode, dll.)" class="input-field resize-y"></textarea>
+                            <label for="data-description" class="block text-gray-700 text-sm sm:text-md font-medium mb-2">Deskripsi Data:</label>
+                            <textarea id="data-description" rows="4" placeholder="Jelaskan isi dataset Anda (kolom, periode, dll.)" class="input-field resize-y text-sm sm:text-base"></textarea>
                         </div>
-                        <button id="upload-button" class="w-full upload-button">Unggah dan Proses Data</button>
-                        <p id="upload-status" class="text-center text-sm mt-4 text-gray-600"></p>
+                        <button id="upload-button" class="w-full upload-button text-base sm:text-lg">Unggah dan Proses Data</button>
+                        <p id="upload-status" class="text-center text-xs sm:text-sm mt-4 text-gray-600"></p>
                     </div>
                 </div>
             </section>
 
             <!-- Asumsi dan Metodologi Section -->
             <section id="assumptions-section" class="section-content">
-                 <details open class="bg-white p-8 rounded-2xl shadow-lg cursor-pointer group">
-                    <summary class="flex justify-between items-center text-2xl font-bold text-gray-900">
+                 <details open class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg cursor-pointer group">
+                    <summary class="flex justify-between items-center text-xl sm:text-2xl font-bold text-gray-900">
                         Asumsi dan Metodologi Simulasi
                         <span class="text-gray-500 group-open:rotate-180 transform transition-transform duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
@@ -318,7 +337,7 @@
                             </svg>
                         </span>
                     </summary>
-                    <div class="mt-6 text-gray-700 leading-relaxed text-lg space-y-4">
+                    <div class="mt-6 text-gray-700 leading-relaxed text-base sm:text-lg space-y-4">
                         <p><strong>Periode Simulasi:</strong> 30 hari.</p>
                         <p><strong>Populasi Total:</strong> 265.185.520 jiwa.</p>
                         <p><strong>Distribusi Probabilitas & RNG:</strong></p>
@@ -349,9 +368,9 @@
             
             <!-- Kesimpulan Section -->
             <section id="conclusion-section" class="section-content">
-                <div class="bg-blue-50 p-8 rounded-2xl border border-blue-200 shadow-lg">
-                    <h2 class="text-3xl font-bold mb-4 text-gray-900">Kesimpulan Simulasi</h2>
-                    <p class="text-gray-700 leading-relaxed text-lg">
+                <div class="bg-blue-50 p-6 sm:p-8 rounded-2xl border border-blue-200 shadow-lg">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-gray-900">Kesimpulan Simulasi</h2>
+                    <p class="text-base sm:text-lg text-gray-700 leading-relaxed">
                         Melalui eksplorasi interaktif, dapat diamati bahwa **Skenario Vaksinasi** secara konsisten menunjukkan hasil yang lebih baik dibandingkan Skenario Dasar. Setelah intervensi vaksinasi dimulai pada hari ke-18, terjadi perlambatan signifikan pada pertumbuhan kasus aktif dan penurunan pada tingkat kematian. Hal ini menggarisbawahi potensi besar program vaksinasi sebagai alat krusial untuk menekan laju pandemi dan mengurangi fatalitas penyakit, memberikan wawasan berharga untuk perencanaan dan respons di masa depan.
                     </p>
                 </div>
@@ -359,7 +378,7 @@
 
         </main>
 
-        <footer class="text-center mt-16 text-gray-500 text-sm">
+        <footer class="text-center mt-16 text-gray-500 text-xs sm:text-sm">
             <p>&copy; 2025 Kelompok 12 IF3.</p>
         </footer>
 
