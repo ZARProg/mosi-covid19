@@ -36,102 +36,117 @@
             background-color: white;
             border-radius: 0.75rem;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            transition: transform 0.2s ease-in-out;
+            box-shadow: 0 4px 10px -2px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06); /* Enhanced shadow */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .kpi-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-5px) scale(1.01); /* Slightly more pronounced hover */
+            box-shadow: 0 8px 15px -3px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
         .slider-thumb::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 24px; /* Larger thumb */
+            height: 24px; /* Larger thumb */
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
+            border: 3px solid #ffffff; /* White border for contrast */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .slider-thumb::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .slider-thumb::-webkit-slider-runnable-track {
+            background: #cbd5e1; /* Lighter track */
+            border-radius: 0.5rem;
+            height: 8px;
+        }
+        .slider-thumb::-moz-range-track {
+            background: #cbd5e1;
+            border-radius: 0.5rem;
+            height: 8px;
         }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8">
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
 
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Simulasi Efektivitas Vaksinasi COVID-19</h1>
-            <p class="text-md text-gray-600 mt-2">Sebuah Dasbor Interaktif Berdasarkan Laporan oleh Kelompok 12 - Informatika 3 UNIKOM</p>
+        <header class="text-center mb-10 py-4">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
+            <p class="text-lg text-gray-600 mt-3">Sebuah Dasbor Interaktif Berdasarkan Laporan oleh Kelompok 12 - Informatika 3 UNIKOM</p>
         </header>
 
         <main>
-            <section id="intro" class="mb-10 bg-white p-6 rounded-xl shadow-sm">
-                <h2 class="text-2xl font-bold mb-3 text-gray-900">Ringkasan Proyek</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Aplikasi ini secara interaktif menyajikan hasil simulasi efektivitas vaksinasi COVID-19 di Indonesia selama periode 30 hari. Tujuan utamanya adalah untuk membandingkan dua skenario: **Skenario Dasar** (tanpa intervensi vaksinasi) dan **Skenario Vaksinasi** (dengan program vaksinasi hipotetis dimulai pada hari ke-18). Dengan menggunakan dasbor ini, Anda dapat menjelajahi data hari demi hari untuk melihat bagaimana vaksinasi secara potensial dapat mengurangi jumlah kasus aktif dan tingkat kematian, mengubah data statis menjadi sebuah cerita yang dinamis.
+            <section id="intro" class="mb-12 bg-white p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Ringkasan Proyek</h2>
+                <p class="text-gray-700 leading-relaxed text-lg">
+                    Aplikasi ini secara interaktif menyajikan hasil simulasi efektivitas vaksinasi COVID-19 di Indonesia selama periode 30 hari. Tujuan utamanya adalah untuk membandingkan dua skenario: **Skenario Dasar** (tanpa intervensi vaksinasi) dan **Skenario Vaksinasi** (dengan program vaksinasi hipotetis dimulai pada hari ke-18). Dengan menggunakan dasbor ini, Anda dapat menjelajahi data hari demi hari untuk melihat bagaimana vaksinasi secara potensial dapat mengurangi jumlah kasus aktif dan tingkat kematian, mengubah data statis menjadi sebuah cerita yang dinamis dan mudah dipahami.
                 </p>
             </section>
 
-            <section id="dashboard" class="bg-gray-100 p-4 md:p-6 rounded-xl">
-                <div class="flex flex-col items-center mb-6">
-                    <label for="day-slider" class="text-lg font-semibold mb-2">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold">1</span></label>
-                    <input id="day-slider" type="range" min="1" max="30" value="1" class="w-full max-w-2xl h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-thumb">
+            <section id="dashboard" class="bg-gray-50 p-6 md:p-10 rounded-2xl shadow-inner">
+                <div class="flex flex-col items-center mb-8">
+                    <label for="day-slider" class="text-xl font-semibold mb-3 text-gray-800">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold text-3xl">1</span></label>
+                    <input id="day-slider" type="range" min="1" max="30" value="1" class="w-full max-w-3xl h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-thumb">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="kpi-card border-l-4 border-gray-500">
-                        <h3 class="text-xl font-semibold text-gray-500 mb-2">Skenario Dasar (Tanpa Vaksin)</h3>
-                        <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="kpi-card border-l-8 border-gray-400">
+                        <h3 class="text-xl font-semibold text-gray-600 mb-3">Skenario Dasar (Tanpa Vaksin)</h3>
+                        <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
                             <div>
                                 <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                <p id="baseline-active" class="text-2xl font-bold"></p>
+                                <p id="baseline-active" class="text-3xl font-bold text-gray-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                <p id="baseline-fatality" class="text-2xl font-bold"></p>
+                                <p id="baseline-fatality" class="text-3xl font-bold text-gray-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                <p id="baseline-new-cases" class="text-2xl font-bold"></p>
+                                <p id="baseline-new-cases" class="text-2xl font-semibold text-gray-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                <p id="baseline-new-deaths" class="text-2xl font-bold"></p>
+                                <p id="baseline-new-deaths" class="text-2xl font-semibold text-gray-700"></p>
                             </div>
                         </div>
                     </div>
-                    <div class="kpi-card border-l-4 border-blue-500">
-                        <h3 class="text-xl font-semibold text-blue-500 mb-2">Skenario Vaksinasi</h3>
-                        <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="kpi-card border-l-8 border-blue-500">
+                        <h3 class="text-xl font-semibold text-blue-600 mb-3">Skenario Vaksinasi</h3>
+                        <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
                              <div>
                                 <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                <p id="vax-active" class="text-2xl font-bold"></p>
+                                <p id="vax-active" class="text-3xl font-bold text-blue-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                <p id="vax-fatality" class="text-2xl font-bold"></p>
+                                <p id="vax-fatality" class="text-3xl font-bold text-blue-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                <p id="vax-new-cases" class="text-2xl font-bold"></p>
+                                <p id="vax-new-cases" class="text-2xl font-semibold text-blue-700"></p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                <p id="vax-new-deaths" class="text-2xl font-bold"></p>
+                                <p id="vax-new-deaths" class="text-2xl font-semibold text-blue-700"></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm">
-                    <div class="flex justify-center items-center gap-4 mb-4">
-                        <button id="btn-active-cases" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Total Kasus Aktif</button>
-                        <button id="btn-fatality-rate" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none">Tingkat Kematian Kasus</button>
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                    <div class="flex justify-center items-center gap-4 mb-6">
+                        <button id="btn-active-cases" class="px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Total Kasus Aktif</button>
+                        <button id="btn-fatality-rate" class="px-6 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">Tingkat Kematian Kasus</button>
                     </div>
                     <div class="chart-container">
                         <canvas id="comparison-chart"></canvas>
@@ -139,34 +154,41 @@
                 </div>
             </section>
 
-            <section id="assumptions" class="mt-10">
-                 <details class="bg-white p-6 rounded-xl shadow-sm cursor-pointer">
-                    <summary class="text-2xl font-bold text-gray-900">Asumsi dan Metodologi Simulasi</summary>
-                    <div class="mt-4 text-gray-700 leading-relaxed space-y-4">
+            <section id="assumptions" class="mt-12">
+                 <details class="bg-white p-8 rounded-2xl shadow-lg cursor-pointer group">
+                    <summary class="flex justify-between items-center text-2xl font-bold text-gray-900">
+                        Asumsi dan Metodologi Simulasi
+                        <span class="text-gray-500 group-open:rotate-180 transform transition-transform duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </summary>
+                    <div class="mt-6 text-gray-700 leading-relaxed text-lg space-y-4">
                         <p><strong>Periode Simulasi:</strong> 30 hari.</p>
                         <p><strong>Populasi Total:</strong> 265.185.520 jiwa.</p>
-                        <p><strong>Distribusi Probabilitas:</strong> Variabel acak (kasus baru, kematian, sembuh) dimodelkan menggunakan **Distribusi Normal** sebagai aproksimasi dari Distribusi Poisson.</p>
+                        <p><strong>Distribusi Probabilitas:</strong> Variabel acak (kasus baru, kematian, sembuh) dimodelkan menggunakan **Distribusi Normal** sebagai aproksimasi dari Distribusi Poisson. Pendekatan ini memungkinkan simulasi untuk menangkap fluktuasi dan variabilitas alami dalam munculnya kasus baru dari hari ke hari, kematian, dan pemulihan.</p>
                         <p><strong>Parameter Vaksinasi (Skenario Hipotetis):</strong></p>
-                        <ul class="list-disc list-inside pl-4">
-                            <li><strong>Mulai Vaksinasi:</strong> Hari ke-18.</li>
-                            <li><strong>Laju Vaksinasi Harian:</strong> 0.1% dari total populasi.</li>
-                            <li><strong>Efikasi Vaksin:</strong> Mengurangi kasus baru sebesar 70% dan mengurangi kematian sebesar 90%.</li>
+                        <ul class="list-disc list-inside pl-6 space-y-2">
+                            <li><strong>Mulai Vaksinasi:</strong> Hari ke-18 simulasi. Asumsi ini memungkinkan perbandingan dampak vaksinasi jika program sudah dapat dilaksanakan lebih awal.</li>
+                            <li><strong>Laju Vaksinasi Harian:</strong> 0.1% dari total populasi per hari. Ini adalah asumsi laju cakupan vaksinasi yang konsisten.</li>
+                            <li><strong>Efikasi Vaksin:</strong> Mengurangi kasus baru sebesar 70% dan mengurangi kematian sebesar 90%. Angka-angka ini mencerminkan tingkat efikasi yang umumnya diharapkan dari vaksin COVID-19.</li>
                         </ul>
                     </div>
                 </details>
             </section>
             
-            <section id="conclusion" class="mt-10 bg-blue-50 p-6 rounded-xl border border-blue-200">
-                <h2 class="text-2xl font-bold mb-3 text-gray-900">Kesimpulan Simulasi</h2>
-                <p class="text-gray-700 leading-relaxed">
-                    Melalui eksplorasi interaktif, dapat diamati bahwa **Skenario Vaksinasi** secara konsisten menunjukkan hasil yang lebih baik dibandingkan Skenario Dasar. Setelah intervensi vaksinasi dimulai pada hari ke-18, terjadi perlambatan signifikan pada pertumbuhan kasus aktif dan penurunan pada tingkat kematian. Hal ini menggarisbawahi potensi besar program vaksinasi sebagai alat krusial untuk menekan laju pandemi dan mengurangi fatalitas penyakit.
+            <section id="conclusion" class="mt-12 bg-blue-50 p-8 rounded-2xl border border-blue-200 shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-gray-900">Kesimpulan Simulasi</h2>
+                <p class="text-gray-700 leading-relaxed text-lg">
+                    Melalui eksplorasi interaktif, dapat diamati bahwa **Skenario Vaksinasi** secara konsisten menunjukkan hasil yang lebih baik dibandingkan Skenario Dasar. Setelah intervensi vaksinasi dimulai pada hari ke-18, terjadi perlambatan signifikan pada pertumbuhan kasus aktif dan penurunan pada tingkat kematian. Hal ini menggarisbawahi potensi besar program vaksinasi sebagai alat krusial untuk menekan laju pandemi dan mengurangi fatalitas penyakit, memberikan wawasan berharga untuk perencanaan dan respons di masa depan.
                 </p>
             </section>
 
         </main>
 
-        <footer class="text-center mt-12 text-gray-500 text-sm">
-            <p>Aplikasi web interaktif ini dibuat berdasarkan laporan "Simulasi Efektivitas Vaksinasi Dalam Pandemi COVID-19" oleh mahasiswa UNIKOM.</p>
+        <footer class="text-center mt-16 text-gray-500 text-sm">
+            <p>&copy; 2025 Dasbor Simulasi Efektivitas Vaksinasi. Dibuat berdasarkan laporan oleh mahasiswa UNIKOM.</p>
         </footer>
 
     </div>
