@@ -321,7 +321,13 @@
                     <div class="mt-6 text-gray-700 leading-relaxed text-lg space-y-4">
                         <p><strong>Periode Simulasi:</strong> 30 hari.</p>
                         <p><strong>Populasi Total:</strong> 265.185.520 jiwa.</p>
-                        <p><strong>Distribusi Probabilitas & RNG:</strong> Variabel acak (kasus baru, kematian, sembuh) dimodelkan menggunakan **Distribusi Normal** sebagai aproksimasi dari Distribusi Poisson. Pendekatan ini memungkinkan simulasi untuk menangkap fluktuasi dan variabilitas alami dalam munculnya kasus baru dari hari ke hari, kematian, dan pemulihan. Penggunaan *seed* acak memastikan hasil simulasi dapat direproduksi.</p>
+                        <p><strong>Distribusi Probabilitas & RNG:</strong></p>
+                        <ul class="list-disc list-inside pl-6 space-y-2">
+                            <li><strong>Kasus Baru Harian (New Cases):</strong> Dimodelkan menggunakan **Distribusi Normal**. Distribusi ini dipilih karena dapat mengaproksimasi Distribusi Poisson, yang sering digunakan untuk memodelkan jumlah kejadian (seperti infeksi baru) dalam interval waktu tertentu. Pendekatan ini memungkinkan simulasi untuk menangkap fluktuasi dan variabilitas alami dalam munculnya kasus baru dari hari ke hari.</li>
+                            <li><strong>Kematian Baru Harian (New Deaths):</strong> Dimodelkan menggunakan **Distribusi Normal**. Serupa dengan kasus baru, jumlah kematian harian juga merupakan kejadian acak yang bervariasi. Penggunaan Distribusi Normal (aproksimasi Poisson) memungkinkan model untuk mensimulasikan pola kematian yang realistis, mempertimbangkan rata-rata historis dan variabilitas yang mungkin terjadi.</li>
+                            <li><strong>Sembuh Baru (New Recovered):</strong> Dimodelkan menggunakan **Distribusi Normal**. Jumlah pasien yang sembuh setiap hari juga fluktuatif dan dapat dimodelkan secara probabilistik. Distribusi Normal digunakan untuk mencerminkan variasi dalam tingkat pemulihan, yang dipengaruhi oleh berbagai faktor.</li>
+                        </ul>
+                        <p>Penggunaan *seed* acak memastikan hasil simulasi dapat direproduksi.</p>
                         <p><strong>Parameter Vaksinasi (Skenario Hipotetis):</strong></p>
                         <ul class="list-disc list-inside pl-6 space-y-2">
                             <li><strong>Mulai Vaksinasi:</strong> Hari ke-18 simulasi. Asumsi ini memungkinkan perbandingan dampak vaksinasi jika program sudah dapat dilaksanakan lebih awal.</li>
