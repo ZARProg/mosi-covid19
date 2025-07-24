@@ -10,13 +10,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Analytics (Off-white background, muted blue for vaccination scenario, neutral gray for baseline, dark text) -->
-    <!-- Application Structure Plan: A dashboard-style SPA. The core is an interactive section with a day-slider (days 1-30) that dynamically updates KPI cards and a central line chart. This allows users to explore the day-by-day comparison between the 'Baseline' and 'Vaccination' scenarios, rather than passively reading a static report. Sections for Introduction, Assumptions, and Conclusion provide context. This structure was chosen to transform the report into an engaging, exploratory tool, prioritizing user discovery of the key findings. -->
-    <!-- Visualization & Content Choices: Report Info: 30-day simulation data comparing two scenarios. Goal: Compare trends. Viz/Presentation: KPI Cards (HTML/Tailwind) for daily stats, Line Chart (Chart.js/Canvas) for trends over time. Interaction: Day slider updates all visuals. Buttons switch the chart metric (Active Cases vs. Fatality Rate). Justification: This combination provides both snapshot and trend views, and the interaction model encourages exploration. Library/Method: Chart.js for its dynamic update capabilities. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- Application Structure Plan: A multi-section SPA with a top navigation bar. Sections include a dynamic 'Dasbor Simulasi' (the original interactive dashboard), 'Informasi Anggota' (team details), and 'Unggah Dataset' (a placeholder for future data input). This structure was chosen to provide clear thematic separation and intuitive navigation, allowing users to explore different aspects of the project beyond just the simulation results, enhancing overall user understanding and engagement. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library/Method - Confirming NO SVG/Mermaid, supporting the DESIGNED structure.
+    - Dasbor Simulasi: Report Info: 30-day simulation data comparing two scenarios. Goal: Compare trends & daily stats. Viz/Presentation: KPI Cards (HTML/Tailwind) for daily stats, Line Chart (Chart.js/Canvas) for trends over time. Interaction: Day slider updates all visuals. Buttons switch the chart metric (Active Cases vs. Fatality Rate). Justification: Provides both snapshot and trend views, encouraging exploration. Library/Method: Chart.js.
+    - Informasi Anggota: Report Info: Team member names and NIMs. Goal: Present team credits clearly. Viz/Presentation: Member cards (HTML/Tailwind grid) with names and roles. Interaction: Static display. Justification: Clear, organized presentation of team members. Library/Method: HTML/Tailwind.
+    - Unggah Dataset: Report Info: Concept of external data input. Goal: Illustrate potential for custom data. Viz/Presentation: Form elements (HTML/Tailwind) with descriptive text. Interaction: Button click (placeholder). Justification: Shows extensibility and potential for user-driven analysis. Library/Method: HTML/Tailwind/Vanilla JS.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8f7f4;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
         }
         .chart-container {
             position: relative;
@@ -36,22 +43,22 @@
             background-color: white;
             border-radius: 0.75rem;
             padding: 1.5rem;
-            box-shadow: 0 4px 10px -2px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06); /* Enhanced shadow */
+            box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .kpi-card:hover {
-            transform: translateY(-5px) scale(1.01); /* Slightly more pronounced hover */
-            box-shadow: 0 8px 15px -3px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
         }
         .slider-thumb::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 24px; /* Larger thumb */
-            height: 24px; /* Larger thumb */
+            width: 24px;
+            height: 24px;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
-            border: 3px solid #ffffff; /* White border for contrast */
+            border: 3px solid #ffffff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .slider-thumb::-moz-range-thumb {
@@ -64,7 +71,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .slider-thumb::-webkit-slider-runnable-track {
-            background: #cbd5e1; /* Lighter track */
+            background: #cbd5e1;
             border-radius: 0.5rem;
             height: 8px;
         }
@@ -73,89 +80,205 @@
             border-radius: 0.5rem;
             height: 8px;
         }
+        .nav-link {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            font-weight: 600;
+        }
+        .nav-link.active {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+        .nav-link:not(.active):hover {
+            background-color: #e0e7ff;
+            color: #3b82f6;
+        }
+        .section-content {
+            display: none;
+        }
+        .section-content.active {
+            display: block;
+        }
+        .member-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+        .member-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+        }
+        .input-field {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            width: 100%;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+    <div class="container mx-auto p-4 md:p-8">
 
         <header class="text-center mb-10 py-4">
             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">Simulasi Efektivitas Vaksinasi COVID-19</h1>
             <p class="text-lg text-gray-600 mt-3">Sebuah Dasbor Interaktif Berdasarkan Laporan oleh Kelompok 12 - Informatika 3 UNIKOM</p>
         </header>
 
+        <nav class="mb-12 bg-white p-4 rounded-2xl shadow-lg flex flex-wrap justify-center gap-4">
+            <button id="nav-dashboard" class="nav-link active">Dasbor Simulasi</button>
+            <button id="nav-members" class="nav-link">Informasi Anggota</button>
+            <button id="nav-upload" class="nav-link">Unggah Dataset</button>
+            <button id="nav-assumptions" class="nav-link">Asumsi & Metodologi</button>
+            <button id="nav-conclusion" class="nav-link">Kesimpulan</button>
+        </nav>
+
         <main>
-            <section id="intro" class="mb-12 bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-bold mb-4 text-gray-900">Ringkasan Proyek</h2>
-                <p class="text-gray-700 leading-relaxed text-lg">
-                    Aplikasi ini secara interaktif menyajikan hasil simulasi efektivitas vaksinasi COVID-19 di Indonesia selama periode 30 hari. Tujuan utamanya adalah untuk membandingkan dua skenario: **Skenario Dasar** (tanpa intervensi vaksinasi) dan **Skenario Vaksinasi** (dengan program vaksinasi hipotetis dimulai pada hari ke-18). Dengan menggunakan dasbor ini, Anda dapat menjelajahi data hari demi hari untuk melihat bagaimana vaksinasi secara potensial dapat mengurangi jumlah kasus aktif dan tingkat kematian, mengubah data statis menjadi sebuah cerita yang dinamis dan mudah dipahami.
-                </p>
-            </section>
-
-            <section id="dashboard" class="bg-gray-50 p-6 md:p-10 rounded-2xl shadow-inner">
-                <div class="flex flex-col items-center mb-8">
-                    <label for="day-slider" class="text-xl font-semibold mb-3 text-gray-800">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold text-3xl">1</span></label>
-                    <input id="day-slider" type="range" min="1" max="30" value="1" class="w-full max-w-3xl h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-thumb">
+            <!-- Dasbor Simulasi Section -->
+            <section id="dashboard-section" class="section-content active">
+                <div class="mb-12 bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-900">Ringkasan Proyek</h2>
+                    <p class="text-gray-700 leading-relaxed text-lg">
+                        Aplikasi ini secara interaktif menyajikan hasil simulasi efektivitas vaksinasi COVID-19 di Indonesia selama periode 30 hari. Tujuan utamanya adalah untuk membandingkan dua skenario: **Skenario Dasar** (tanpa intervensi vaksinasi) dan **Skenario Vaksinasi** (dengan program vaksinasi hipotetis dimulai pada hari ke-18). Dengan menggunakan dasbor ini, Anda dapat menjelajahi data hari demi hari untuk melihat bagaimana vaksinasi secara potensial dapat mengurangi jumlah kasus aktif dan tingkat kematian, mengubah data statis menjadi sebuah cerita yang dinamis dan mudah dipahami.
+                    </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                    <div class="kpi-card border-l-8 border-gray-400">
-                        <h3 class="text-xl font-semibold text-gray-600 mb-3">Skenario Dasar (Tanpa Vaksin)</h3>
-                        <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
-                            <div>
-                                <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                <p id="baseline-active" class="text-3xl font-bold text-gray-700"></p>
+                <div class="bg-gray-50 p-6 md:p-10 rounded-2xl shadow-inner">
+                    <div class="flex flex-col items-center mb-8">
+                        <label for="day-slider" class="text-xl font-semibold mb-3 text-gray-800">Jelajahi Simulasi: Hari ke-<span id="day-label" class="text-blue-600 font-bold text-3xl">1</span></label>
+                        <input id="day-slider" type="range" min="1" max="30" value="1" class="w-full max-w-3xl h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider-thumb">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                        <div class="kpi-card border-l-8 border-gray-400">
+                            <h3 class="text-xl font-semibold text-gray-600 mb-3">Skenario Dasar (Tanpa Vaksin)</h3>
+                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
+                                <div>
+                                    <p class="text-sm text-gray-500">Total Kasus Aktif</p>
+                                    <p id="baseline-active" class="text-3xl font-bold text-gray-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Tingkat Kematian</p>
+                                    <p id="baseline-fatality" class="text-3xl font-bold text-gray-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Kasus Baru Harian</p>
+                                    <p id="baseline-new-cases" class="text-2xl font-semibold text-gray-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Kematian Baru Harian</p>
+                                    <p id="baseline-new-deaths" class="text-2xl font-semibold text-gray-700"></p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                <p id="baseline-fatality" class="text-3xl font-bold text-gray-700"></p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                <p id="baseline-new-cases" class="text-2xl font-semibold text-gray-700"></p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                <p id="baseline-new-deaths" class="text-2xl font-semibold text-gray-700"></p>
+                        </div>
+                        <div class="kpi-card border-l-8 border-blue-500">
+                            <h3 class="text-xl font-semibold text-blue-600 mb-3">Skenario Vaksinasi</h3>
+                            <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
+                                 <div>
+                                    <p class="text-sm text-gray-500">Total Kasus Aktif</p>
+                                    <p id="vax-active" class="text-3xl font-bold text-blue-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Tingkat Kematian</p>
+                                    <p id="vax-fatality" class="text-3xl font-bold text-blue-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Kasus Baru Harian</p>
+                                    <p id="vax-new-cases" class="text-2xl font-semibold text-blue-700"></p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Kematian Baru Harian</p>
+                                    <p id="vax-new-deaths" class="text-2xl font-semibold text-blue-700"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="kpi-card border-l-8 border-blue-500">
-                        <h3 class="text-xl font-semibold text-blue-600 mb-3">Skenario Vaksinasi</h3>
-                        <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center">
-                             <div>
-                                <p class="text-sm text-gray-500">Total Kasus Aktif</p>
-                                <p id="vax-active" class="text-3xl font-bold text-blue-700"></p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Tingkat Kematian</p>
-                                <p id="vax-fatality" class="text-3xl font-bold text-blue-700"></p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Kasus Baru Harian</p>
-                                <p id="vax-new-cases" class="text-2xl font-semibold text-blue-700"></p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Kematian Baru Harian</p>
-                                <p id="vax-new-deaths" class="text-2xl font-semibold text-blue-700"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-                    <div class="flex justify-center items-center gap-4 mb-6">
-                        <button id="btn-active-cases" class="px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Total Kasus Aktif</button>
-                        <button id="btn-fatality-rate" class="px-6 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">Tingkat Kematian Kasus</button>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="comparison-chart"></canvas>
+                    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                        <div class="flex justify-center items-center gap-4 mb-6">
+                            <button id="btn-active-cases" class="px-6 py-3 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Total Kasus Aktif</button>
+                            <button id="btn-fatality-rate" class="px-6 py-3 text-base font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">Tingkat Kematian Kasus</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="comparison-chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section id="assumptions" class="mt-12">
-                 <details class="bg-white p-8 rounded-2xl shadow-lg cursor-pointer group">
+            <!-- Informasi Anggota Section -->
+            <section id="members-section" class="section-content">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Informasi Anggota Tim</h2>
+                    <p class="text-gray-700 leading-relaxed text-lg mb-8 text-center">
+                        Proyek simulasi ini disusun oleh tim mahasiswa dari Jurusan Teknik Informatika, Universitas Komputer Indonesia, sebagai bagian dari perkuliahan Pemodelan dan Simulasi.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="member-card">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Muhammad Daffa Afdilla</h3>
+                            <p class="text-gray-600">NIM: 10122189</p>
+                            <p class="text-gray-500 text-sm mt-1">Koordinator Tim / Analis Data</p>
+                        </div>
+                        <div class="member-card">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Dionisius Deni Mardiansyah</h3>
+                            <p class="text-gray-600">NIM: 10123089</p>
+                            <p class="text-gray-500 text-sm mt-1">Pengembang Model / UI Designer</p>
+                        </div>
+                        <div class="member-card">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Muhammad Hafiz Hafiyyan</h3>
+                            <p class="text-gray-600">NIM: 10123096</p>
+                            <p class="text-gray-500 text-sm mt-1">Analis Statistik / Dokumentasi</p>
+                        </div>
+                        <div class="member-card">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Samuel Tigor H.S.</h3>
+                            <p class="text-gray-600">NIM: 10123000</p>
+                            <p class="text-gray-500 text-sm mt-1">Pengembang Aplikasi / UX Designer</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Unggah Dataset Section -->
+            <section id="upload-section" class="section-content">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-900 text-center">Unggah Dataset Anda</h2>
+                    <p class="text-gray-700 leading-relaxed text-lg mb-8 text-center">
+                        Bagian ini dirancang untuk memungkinkan Anda mengunggah dataset historis COVID-19 Anda sendiri di masa mendatang. Fitur ini akan memungkinkan simulasi dijalankan dengan data kustom, memberikan fleksibilitas lebih dalam analisis.
+                    </p>
+                    <div class="max-w-xl mx-auto p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-inner">
+                        <div class="mb-5">
+                            <label for="dataset-file" class="block text-gray-700 text-md font-medium mb-2">Pilih File Dataset (CSV/JSON):</label>
+                            <input type="file" id="dataset-file" accept=".csv,.json" class="input-field block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        </div>
+                        <div class="mb-5">
+                            <label for="dataset-name" class="block text-gray-700 text-md font-medium mb-2">Nama Dataset (Opsional):</label>
+                            <input type="text" id="dataset-name" placeholder="Misalnya: Data COVID-19 Jakarta" class="input-field">
+                        </div>
+                        <div class="mb-6">
+                            <label for="data-description" class="block text-gray-700 text-md font-medium mb-2">Deskripsi Data:</label>
+                            <textarea id="data-description" rows="4" placeholder="Jelaskan isi dataset Anda (kolom, periode, dll.)" class="input-field resize-y"></textarea>
+                        </div>
+                        <button id="upload-button" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Unggah dan Proses Data</button>
+                        <p id="upload-status" class="text-center text-sm mt-4 text-gray-600"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Asumsi dan Metodologi Section -->
+            <section id="assumptions-section" class="section-content">
+                 <details open class="bg-white p-8 rounded-2xl shadow-lg cursor-pointer group">
                     <summary class="flex justify-between items-center text-2xl font-bold text-gray-900">
                         Asumsi dan Metodologi Simulasi
                         <span class="text-gray-500 group-open:rotate-180 transform transition-transform duration-200">
@@ -178,11 +301,14 @@
                 </details>
             </section>
             
-            <section id="conclusion" class="mt-12 bg-blue-50 p-8 rounded-2xl border border-blue-200 shadow-lg">
-                <h2 class="text-2xl font-bold mb-4 text-gray-900">Kesimpulan Simulasi</h2>
-                <p class="text-gray-700 leading-relaxed text-lg">
-                    Melalui eksplorasi interaktif, dapat diamati bahwa **Skenario Vaksinasi** secara konsisten menunjukkan hasil yang lebih baik dibandingkan Skenario Dasar. Setelah intervensi vaksinasi dimulai pada hari ke-18, terjadi perlambatan signifikan pada pertumbuhan kasus aktif dan penurunan pada tingkat kematian. Hal ini menggarisbawahi potensi besar program vaksinasi sebagai alat krusial untuk menekan laju pandemi dan mengurangi fatalitas penyakit, memberikan wawasan berharga untuk perencanaan dan respons di masa depan.
-                </p>
+            <!-- Kesimpulan Section -->
+            <section id="conclusion-section" class="section-content">
+                <div class="bg-blue-50 p-8 rounded-2xl border border-blue-200 shadow-lg">
+                    <h2 class="text-3xl font-bold mb-4 text-gray-900">Kesimpulan Simulasi</h2>
+                    <p class="text-gray-700 leading-relaxed text-lg">
+                        Melalui eksplorasi interaktif, dapat diamati bahwa **Skenario Vaksinasi** secara konsisten menunjukkan hasil yang lebih baik dibandingkan Skenario Dasar. Setelah intervensi vaksinasi dimulai pada hari ke-18, terjadi perlambatan signifikan pada pertumbuhan kasus aktif dan penurunan pada tingkat kematian. Hal ini menggarisbawahi potensi besar program vaksinasi sebagai alat krusial untuk menekan laju pandemi dan mengurangi fatalitas penyakit, memberikan wawasan berharga untuk perencanaan dan respons di masa depan.
+                    </p>
+                </div>
             </section>
 
         </main>
@@ -381,6 +507,63 @@
             });
 
             updateDisplay(0);
+
+            // Navigation Logic
+            const navButtons = {
+                dashboard: document.getElementById('nav-dashboard'),
+                members: document.getElementById('nav-members'),
+                upload: document.getElementById('nav-upload'),
+                assumptions: document.getElementById('nav-assumptions'),
+                conclusion: document.getElementById('nav-conclusion')
+            };
+
+            const sections = {
+                dashboard: document.getElementById('dashboard-section'),
+                members: document.getElementById('members-section'),
+                upload: document.getElementById('upload-section'),
+                assumptions: document.getElementById('assumptions-section'),
+                conclusion: document.getElementById('conclusion-section')
+            };
+
+            function showSection(sectionId) {
+                for (const key in sections) {
+                    sections[key].classList.remove('active');
+                    navButtons[key].classList.remove('active');
+                }
+                sections[sectionId].classList.add('active');
+                navButtons[sectionId].classList.add('active');
+                
+                // For 'Asumsi' and 'Kesimpulan' sections, ensure the details tag is open by default
+                if (sectionId === 'assumptions') {
+                    document.querySelector('#assumptions-section details').setAttribute('open', '');
+                } else {
+                    document.querySelector('#assumptions-section details').removeAttribute('open');
+                }
+            }
+
+            navButtons.dashboard.addEventListener('click', () => showSection('dashboard'));
+            navButtons.members.addEventListener('click', () => showSection('members'));
+            navButtons.upload.addEventListener('click', () => showSection('upload'));
+            navButtons.assumptions.addEventListener('click', () => showSection('assumptions'));
+            navButtons.conclusion.addEventListener('click', () => showSection('conclusion'));
+
+            // Placeholder for Upload functionality
+            document.getElementById('upload-button').addEventListener('click', () => {
+                const fileName = document.getElementById('dataset-file').files[0]?.name;
+                const statusElement = document.getElementById('upload-status');
+                if (fileName) {
+                    statusElement.textContent = `File '${fileName}' berhasil diunggah (simulasi). Fitur pemrosesan data akan tersedia di pengembangan selanjutnya.`;
+                    statusElement.classList.remove('text-red-500');
+                    statusElement.classList.add('text-green-600');
+                } else {
+                    statusElement.textContent = 'Mohon pilih file untuk diunggah.';
+                    statusElement.classList.remove('text-green-600');
+                    statusElement.classList.add('text-red-500');
+                }
+            });
+
+            // Initial display
+            showSection('dashboard');
         });
     </script>
 </body>
